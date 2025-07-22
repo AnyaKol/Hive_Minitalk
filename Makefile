@@ -17,25 +17,14 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra -g
 
 HDR = minitalk.h
-#HDR_B = minitalk_bonus.h
 
-SRC_C = \
-	client.c \
+SRC_C = client.c
 
-SRC_S = \
-	server.c \	
-
-#SRC_CB = \
-#	client_bonus.c \
-
-#SRC_SB = \
-#	server_bonus.c \
+SRC_S = server.c
 
 OBJ_DIR = obj
 OBJ_C = $(SRC_C:%.c=$(OBJ_DIR)/%.o)
 OBJ_S = $(SRC_S:%.c=$(OBJ_DIR)/%.o)
-#OBJ_CB = $(SRC_CB:%.c=$(OBJ_DIR)/%.o)
-#OBJ_SB = $(SRC_SB:%.c=$(OBJ_DIR)/%.o)
 
 LIB_DIR = libft
 LIB_NAME = $(LIB_DIR)/libft.a
@@ -48,13 +37,11 @@ all: $(NAME_C) $(NAME_S)
 
 $(NAME_C): $(OBJ_DIR) $(OBJ_C) $(LIB_NAME)
 	@echo "$(COLOR) Building $@$(RESET)"
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ_C) $(LIB_NAME)
+	@$(CC) $(CFLAGS) -o $(NAME_C) $(OBJ_C) $(LIB_NAME)
 
 $(NAME_S): $(OBJ_DIR) $(OBJ_S) $(LIB_NAME)
 	@echo "$(COLOR) Building $@$(RESET)"
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ_S) $(LIB_NAME)
-
-#bonus: $(NAME_C) $(NAME_S)
+	@$(CC) $(CFLAGS) -o $(NAME_S) $(OBJ_S) $(LIB_NAME)
 
 $(OBJ_DIR):
 	@mkdir $(OBJ_DIR)
@@ -79,4 +66,4 @@ fclean: clean
 re: fclean all
 
 .SECONDARY: $(OBJ_DIR) $(OBJ_C) $(OBJ_S)
-.PHONY: all clean fclean re bonus
+.PHONY: all clean fclean re

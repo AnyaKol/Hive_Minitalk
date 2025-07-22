@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:28:11 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/21 16:43:41 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/22 16:27:45 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,23 @@
 
 void	signal_handler(int signal)
 {
-	ft_printf("Signal value is: %i", signal);
+	(void)	signal;
+
+	write(1, "Mrr~\n", 5);
 }
 
 int	main(void)
 {
 	pid_t	pid;
+	struct sigaction	sa;
+	sa.sa_handler = signal_handler;
 
 	pid = getpid();
 	ft_printf("%i\n", pid);
-	//signal(SIGUSR1, signal_handler);
+	sigaction(SIGUSR1, &sa, NULL);
+	while (1)
+	{
+		pause();
+	}
 
 }
