@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:28:11 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/22 16:27:45 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/22 18:34:08 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@ void	signal_handler(int signal)
 {
 	(void)	signal;
 
-	write(1, "Mrr~\n", 5);
+	write(1, "signal received\n", 16);
+	write(1, &message, 5);
+	ft_printf("message int: %i\n", (int) message);
+	message = 0;
 }
 
 int	main(void)

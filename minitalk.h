@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:29:08 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/20 16:34:32 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/22 18:26:16 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,7 @@
 #include "libft/libft.h"
 #include <signal.h>
 #include <sys/types.h>
+
+char	message = 0;
 
 #endif
