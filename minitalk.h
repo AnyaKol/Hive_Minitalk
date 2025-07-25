@@ -17,6 +17,4 @@
 #include <signal.h>
 #include <sys/types.h>
 
-char	message = 0;
-
 #endif
