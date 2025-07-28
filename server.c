@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:28:11 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/25 17:55:49 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/28 17:07:30 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ volatile sig_atomic_t	message = 0;
 
 void	handler(int signal)
 {
+	//ft_printf("Received signal!\n");
 	message >>= 1;
 	if (signal == SIGUSR2)
 		message |= 128;
@@ -27,6 +28,7 @@ int	main(void)
 {
 	pid_t				pid;
 	struct sigaction	sa;
+	int					bit_counter;
 
 	sa.sa_handler = handler;
 	sigemptyset(&sa.sa_mask);
@@ -35,15 +37,18 @@ int	main(void)
 	sigaction(SIGUSR2, &sa, NULL);//12
 	pid = getpid();
 	ft_printf("%i\n", pid);
+	bit_counter = 0;
 	while (1)
 	{
-	//	sigaddset(&block_mask, SIGUSR1);
-	//	sigaddset(&block_mask, SIGUSR2);
 		pause();
-	//	sigemptyset(&block_mask);
-		ft_printf("%c\n", (char) message);
-		ft_putbinary((int) message);
-		ft_printf("\n");
+		bit_counter++;
+		if (bit_counter == 8)
+		{
+			ft_printf("%c", (char) message);
+			//ft_putbinary((int) message);
+			//ft_printf("\n");
+			bit_counter = 0;
+		}
 	}
 	return (0);
 }
