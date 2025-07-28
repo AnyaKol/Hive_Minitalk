@@ -22,9 +22,12 @@ SRC_C = client.c
 
 SRC_S = server.c
 
+SRC_COMMON = utils.c
+
 OBJ_DIR = obj
 OBJ_C = $(SRC_C:%.c=$(OBJ_DIR)/%.o)
 OBJ_S = $(SRC_S:%.c=$(OBJ_DIR)/%.o)
+OBJ_COMMON = $(SRC_COMMON:%.c=$(OBJ_DIR)/%.o)
 
 LIB_DIR = libft
 LIB_NAME = $(LIB_DIR)/libft.a
@@ -35,13 +38,13 @@ RESET = \033[0m
 
 all: $(NAME_C) $(NAME_S)
 
-$(NAME_C): $(OBJ_DIR) $(OBJ_C) $(LIB_NAME)
+$(NAME_C): $(OBJ_DIR) $(OBJ_C) $(OBJ_COMMON) $(LIB_NAME)
 	@echo "$(COLOR) Building $@$(RESET)"
-	@$(CC) $(CFLAGS) -o $(NAME_C) $(OBJ_C) $(LIB_NAME)
+	@$(CC) $(CFLAGS) -o $(NAME_C) $(OBJ_C) $(OBJ_COMMON) $(LIB_NAME)
 
-$(NAME_S): $(OBJ_DIR) $(OBJ_S) $(LIB_NAME)
+$(NAME_S): $(OBJ_DIR) $(OBJ_S) $(OBJ_COMMON) $(LIB_NAME)
 	@echo "$(COLOR) Building $@$(RESET)"
-	@$(CC) $(CFLAGS) -o $(NAME_S) $(OBJ_S) $(LIB_NAME)
+	@$(CC) $(CFLAGS) -o $(NAME_S) $(OBJ_S) $(OBJ_COMMON) $(LIB_NAME)
 
 $(OBJ_DIR):
 	@mkdir $(OBJ_DIR)
@@ -65,5 +68,5 @@ fclean: clean
 
 re: fclean all
 
-.SECONDARY: $(OBJ_DIR) $(OBJ_C) $(OBJ_S)
+.SECONDARY: $(OBJ_DIR) $(OBJ_C) $(OBJ_S) $(OBJ_COMMON)
 .PHONY: all clean fclean re

@@ -10,13 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
+#include "minitalk.h"
 
-#include "libft/libft.h"
-#include <signal.h>
-#include <sys/types.h>
+int	print_error(int err_num)
+{
+	const char	*errors[4] =
+	{
+		"Handler setup failed",
+		"Invalid number of arguments",
+		"Invalid PID",
+		"Failed to send signal",
 
-int	print_error(int err_num);
-
-#endif
+	};
+	if (err_num > 3)
+		ft_printf("No such error\n");
+	else
+		ft_printf("%s\n", errors[err_num]);
+	return (1);
+}

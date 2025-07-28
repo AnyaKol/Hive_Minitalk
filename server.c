@@ -6,37 +6,34 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:28:11 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/28 17:07:30 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/28 20:24:26 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	ft_putbinary(int c);
+//void	ft_putbinary(int c);
+static int	setup_handler(void);
+static void	handler(int sig, siginfo_t *info, void *ucontext);
 
 volatile sig_atomic_t	message = 0;
 
-void	handler(int signal)
+static void	handler(int sig, siginfo_t *info, void *ucontext)
 {
-	//ft_printf("Received signal!\n");
+	(void) ucontext;
+
+	ft_printf("Sender PID: %i\n", info->si_pid);
 	message >>= 1;
-	if (signal == SIGUSR2)
+	if (sig == SIGUSR2)
 		message |= 128;
 }
 
 int	main(void)
 {
-	pid_t				pid;
-	struct sigaction	sa;
-	int					bit_counter;
+	int	bit_counter;
 
-	sa.sa_handler = handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGUSR1, &sa, NULL);//10
-	sigaction(SIGUSR2, &sa, NULL);//12
-	pid = getpid();
-	ft_printf("%i\n", pid);
+	if (setup_handler() == -1)
+		return (print_error(0));
 	bit_counter = 0;
 	while (1)
 	{
@@ -53,6 +50,22 @@ int	main(void)
 	return (0);
 }
 
+static int	setup_handler(void)
+{
+	pid_t				pid;
+	struct sigaction	sa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_SIGINFO;
+	sa.sa_sigaction = handler;
+	sigaction(SIGUSR1, &sa, NULL);//10
+	sigaction(SIGUSR2, &sa, NULL);//12
+	pid = getpid();
+	if (pid > 0)
+		return (ft_printf("%i\n", pid));
+	return (-1);
+}
+/*
 void	ft_putbinary(int c)
 {
 	int		i;
@@ -70,3 +83,4 @@ void	ft_putbinary(int c)
 	}
 	write(1, arr, 8);
 }
+*/
