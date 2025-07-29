@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:29:08 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/29 20:10:44 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/29 21:42:57 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 
 int	print_error(int err_num)
 {
-	const char	*errors[4] =
+	const char	*errors[6] =
 	{
 		"Handler setup failed",
+		"Allocation failed",
 		"Invalid number of arguments",
 		"Invalid PID",
-		"Failed to send signal"
+		"Failed to send signal",
+		"Print error"
 	};
-	if (err_num > 3)
+	if (err_num > 5)
 		ft_printf("No such error\n");
 	else
 		ft_printf("%s\n", errors[err_num]);
