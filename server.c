@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:28:11 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/28 20:24:26 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/29 20:17:13 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ static void	handler(int sig, siginfo_t *info, void *ucontext)
 {
 	(void) ucontext;
 
-	ft_printf("Sender PID: %i\n", info->si_pid);
 	message >>= 1;
 	if (sig == SIGUSR2)
 		message |= 128;
+	usleep(SLEEP_TIME);
+	kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)

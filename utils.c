@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:29:08 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/22 18:26:16 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/29 20:10:44 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ int	print_error(int err_num)
 		"Handler setup failed",
 		"Invalid number of arguments",
 		"Invalid PID",
-		"Failed to send signal",
-
+		"Failed to send signal"
 	};
 	if (err_num > 3)
 		ft_printf("No such error\n");
