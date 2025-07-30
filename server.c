@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:28:11 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/29 21:45:48 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/07/30 20:07:27 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static void	handler(int sig, siginfo_t *info, void *ucontext);
 static int	receive_len(char **message);
 static int	setup_sigaction(void);
+void	ft_putbinary(int c);
 
 volatile sig_atomic_t	var = 0;
 
@@ -37,9 +38,9 @@ int	main(void)
 	{
 		pause();
 		bit_counter++;
-		if (bit_counter == sizeof(char) * 8)
+		if (bit_counter == 8)
 		{
-			message[i] = var >> (sizeof(int) - 1) * 8;
+			message[i] = var >> 8;
 			i++;
 			if (i == len)
 				break ;
@@ -57,7 +58,14 @@ static void	handler(int sig, siginfo_t *info, void *ucontext)
 
 	var >>= 1;
 	if (sig == SIGUSR2)
-		var |= 128 * sizeof(int);
+	{
+		var |= 32768;
+		//ft_printf("received 1\n");
+	}
+	else
+	{
+		//ft_printf("received 0\n");
+	}
 	usleep(SLEEP_TIME);
 	kill(info->si_pid, SIGUSR1);
 }
@@ -67,17 +75,20 @@ static int	receive_len(char **message)
 	int		bit_counter;
 
 	bit_counter = 0;
-	while (bit_counter < (int) sizeof(int) * 8)
+	ft_printf("Receiving len in 2 bytes\n");
+	while (bit_counter < 16)
 	{
 		pause();
+		ft_printf("var: %i\n", var);
+		ft_putbinary(var);
 		bit_counter++;
 	}
 	*message = ft_calloc(var, sizeof(char));
 	if (*message == NULL)
 		return (-1);
+	ft_printf("Len: %i\n", var);
 	return (var);
 }
-
 
 static int	setup_sigaction(void)
 {
@@ -96,4 +107,23 @@ static int	setup_sigaction(void)
 	if (ft_printf("%i\n", pid) == -1)
 		return (print_error(5));
 	return (0);
+}
+
+void	ft_putbinary(int c)
+{
+	int		i;
+	char	arr[16];
+
+	i = 15;
+	while (i >= 0)
+	{
+		if ((int) c % 2 == 0)
+			arr[i] = '0';
+		else
+			arr[i] = '1';
+		c >>= 1;
+		i--;
+	}
+	write(1, arr, 16);
+	write(1, "\n", 1);
 }

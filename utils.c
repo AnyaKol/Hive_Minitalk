@@ -14,16 +14,18 @@
 
 int	print_error(int err_num)
 {
-	const char	*errors[6] =
+	const char	*errors[8] =
 	{
 		"Handler setup failed",
 		"Allocation failed",
 		"Invalid number of arguments",
 		"Invalid PID",
 		"Failed to send signal",
-		"Print error"
+		"Printf error",
+		"ft_strlen error",
+		"Message too long"
 	};
-	if (err_num > 5)
+	if (err_num > 7)
 		ft_printf("No such error\n");
 	else
 		ft_printf("%s\n", errors[err_num]);
