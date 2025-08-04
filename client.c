@@ -6,15 +6,17 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:27:54 by akolupae          #+#    #+#             */
-/*   Updated: 2025/07/30 20:00:33 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/08/04 16:43:33 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
 static void	handler(int sig);
-static int	send_bits(pid_t pid, int var, int bits);
-static int	setup_handler(void);
+static void	send_bits(pid_t pid, int var, int bits);
+static void	setup_handler(void);
+
+volatile sig_atomic_t	signal_received = 0;
 
 int	main(int argc, char **argv)
 {
@@ -22,39 +24,48 @@ int	main(int argc, char **argv)
 	int		i;
 	int		len;
 
-	if (setup_handler() == -1)
-		return (print_error(0));
 	if (argc != 3)
-		return (print_error(2));
+		print_error_and_exit(2);
+	setup_handler();
 	pid = ft_atoi(argv[1]);
 	if (pid <= 0)
-		return (print_error(3));
-	i = 0;
+		print_error_and_exit(3);
 	len = ft_strlen(argv[2]);
 	if (len == 0)
 		return (0);
 	else if (len < 0)
-		return (print_error(6));
+		print_error_and_exit(6);
 	else if (len > 65535)
-		return (print_error(7));
-	ft_printf("Len: %i\n", len);
-	if (send_bits(pid, len, 16) == -1)
-		return (print_error(4));
+		print_error_and_exit(7);
+	ft_printf("Len: %i\n", len);//REMOVE
+	send_bits(pid, len, 16);
+	i = 0;
 	while (i < len)
 	{
-		if (send_bits(pid, (int) argv[2][i], 8) == -1)
-			return (print_error(4));
+		send_bits(pid, (int) argv[2][i], 8);
 		i++;
 	}
 	return (0);
 }
 
+static void	setup_handler(void)
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = handler;
+	if (sigemptyset(&sa.sa_mask) == -1 ||
+		sigaction(SIGUSR1, &sa, NULL) == -1)
+		print_error_and_exit(0);
+}
+
 static void	handler(int sig)
 {
 	(void) sig;
+
+	signal_received = 1;
 }
 
-static int	send_bits(pid_t pid, int var, int bits)
+static void	send_bits(pid_t pid, int var, int bits)
 {
 	int	bit;
 	int	result;
@@ -63,6 +74,7 @@ static int	send_bits(pid_t pid, int var, int bits)
 	bit = bits;
 	while (bit > 0)
 	{
+		signal_received = 0;
 		if ((int) var % 2 == 0)
 		{
 			//ft_printf("sending 0\n");
@@ -74,22 +86,10 @@ static int	send_bits(pid_t pid, int var, int bits)
 			result = kill(pid, SIGUSR2);
 		}
 		if (result == -1)
-			return (-1);
+			print_error_and_exit(4);
 		var >>= 1;
 		bit--;
-		pause();
-		usleep(SLEEP_TIME);
+		while (signal_received != 1)
+			usleep(SLEEP_TIME);
 	}
-	return (0);
-}
-
-static int	setup_handler(void)
-{
-	struct sigaction	sa;
-
-	sa.sa_handler = handler;
-	if (sigemptyset(&sa.sa_mask) == -1 ||
-		sigaction(SIGUSR1, &sa, NULL) == -1)
-		return (-1);
-	return (0);
 }
