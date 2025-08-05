@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:28:11 by akolupae          #+#    #+#             */
-/*   Updated: 2025/08/04 17:59:04 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/08/05 22:10:38 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,27 @@
 
 static void	setup_sigaction(void);
 static void	handler(int sig, siginfo_t *info, void *ucontext);
-static void	message_cicle();
-static void	receive_len(char **message);
+static void	message_cicle(t_message *message);
+static void	receive_len(t_message *message);
 void	ft_putbinary(int c);
 
 volatile sig_atomic_t	var = 0;
 
 int	main(void)
 {
-	char	*message;
+	t_message	message;
 
 	setup_sigaction();
 	while (1)
 	{
 		receive_len(&message);
-		message_cicle(message);
-		if (ft_printf("%s", message) == -1)
+		message_cicle(&message);
+		if (ft_printf("%s\n", message.str) == -1)
 		{
-			ft_free(message);
+			ft_free(message.str);
 			print_error_and_exit(5);
 		}
-		free(message);
+		ft_free(message.str);
 	}
 	return (0);
 }
@@ -61,25 +61,50 @@ static void	handler(int sig, siginfo_t *info, void *ucontext)
 {
 	(void) ucontext;
 
+	write(1, "received signal\n", 16);
 	var >>= 1;
 	if (sig == SIGUSR2)
-	{
-		var |= 128;
-		//ft_printf("received 1\n");
-	}
-	else
-	{
-		//ft_printf("received 0\n");
-	}
+		var |= 1 << 23;
 	usleep(SLEEP_TIME);
 	kill(info->si_pid, SIGUSR1);
 }
 
-static void	message_cicle()
+static void	receive_len(t_message *message)
+{
+	int	bit_counter;
+	//int len;
+
+	bit_counter = 0;
+	//len = 0;
+	ft_printf("Waiting...\n");
+	while (bit_counter < 24)
+	{
+		/*
+		if (bit_counter % 8 == 0)
+		{
+			len += var << (bit_counter / 8);
+			ft_printf("len: %i\n", len);//REMOVE
+			var = 0;
+		}
+		ft_printf("var: %i\n", var);//REMOVE
+		ft_putbinary(var);//REMOVE
+		*/
+		pause();
+		bit_counter++;
+	}
+	ft_printf("var: %i\n", var);//REMOVE
+	ft_putbinary(var);//REMOVE
+	message->len = var;
+	message->str = ft_calloc(var + 1, sizeof(char));
+	if (message->str == NULL)
+		print_error_and_exit(1);
+	ft_printf("Len: %i\n", message->len);//REMOVE
+}
+
+static void	message_cicle(t_message *message)
 {
 	int		bit_counter;
 	int		i;
-	int		len;
 
 	var = 0;
 	bit_counter = 0;
@@ -90,32 +115,13 @@ static void	message_cicle()
 		bit_counter++;
 		if (bit_counter == 8)
 		{
-			message[i] = var;
+			message->str[i] = var >> 16;
 			i++;
-			if (i == len)
+			if (i == message->len)
 				break ;
 			bit_counter = 0;
 		}
 	}
-}
-
-static void	receive_len(char **message)
-{
-	int		bit_counter;
-
-	bit_counter = 0;
-	//ft_printf("Receiving len in 2 bytes\n");
-	while (bit_counter < 8)
-	{
-		pause();
-		ft_printf("var: %i\n", var);
-		ft_putbinary(var);
-		bit_counter++;
-	}
-	*message = ft_calloc(var + 1, sizeof(char));
-	if (*message == NULL)
-		print_error_and_exit(1);
-	ft_printf("Len: %i\n", var);
 }
 
 void	ft_putbinary(int c)
@@ -133,6 +139,6 @@ void	ft_putbinary(int c)
 		c >>= 1;
 		i--;
 	}
-	write(1, arr, 16);
+	write(1, arr, 8);
 	write(1, "\n", 1);
 }

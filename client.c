@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:27:54 by akolupae          #+#    #+#             */
-/*   Updated: 2025/08/04 16:43:33 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/08/05 19:28:03 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ int	main(int argc, char **argv)
 		return (0);
 	else if (len < 0)
 		print_error_and_exit(6);
-	else if (len > 65535)
+	else if (len > 2097152)
 		print_error_and_exit(7);
 	ft_printf("Len: %i\n", len);//REMOVE
-	send_bits(pid, len, 16);
+	send_bits(pid, len, 24);
 	i = 0;
 	while (i < len)
 	{
@@ -69,27 +69,37 @@ static void	send_bits(pid_t pid, int var, int bits)
 {
 	int	bit;
 	int	result;
+	int	time;
 
 	ft_printf("Sending var=%i in %i bits\n", var, bits);
 	bit = bits;
 	while (bit > 0)
 	{
+		//ft_printf("signal was: %i\n", signal_received);//REMOVE
 		signal_received = 0;
+		//ft_printf("signal now: %i\n", signal_received);//REMOVE
+		ft_printf("var: %i\n", var);
 		if ((int) var % 2 == 0)
 		{
-			//ft_printf("sending 0\n");
+			ft_printf("sending 0\n");//REMOVE
 			result = kill(pid, SIGUSR1);
 		}
 		else
 		{
-			//ft_printf("sending 1\n");
+			ft_printf("sending 1\n");//REMOVE
 			result = kill(pid, SIGUSR2);
 		}
 		if (result == -1)
 			print_error_and_exit(4);
 		var >>= 1;
 		bit--;
+		time = 0;
 		while (signal_received != 1)
+		{
+			time += SLEEP_TIME;
 			usleep(SLEEP_TIME);
+			if (time >= TIMEOUT)
+				print_error_and_exit(8);
+		}
 	}
 }
