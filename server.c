@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:28:11 by akolupae          #+#    #+#             */
-/*   Updated: 2025/08/05 22:10:38 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/08/06 12:11:44 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ static void	handler(int sig, siginfo_t *info, void *ucontext)
 {
 	(void) ucontext;
 
-	write(1, "received signal\n", 16);
 	var >>= 1;
 	if (sig == SIGUSR2)
 		var |= 1 << 23;
@@ -76,7 +75,7 @@ static void	receive_len(t_message *message)
 
 	bit_counter = 0;
 	//len = 0;
-	ft_printf("Waiting...\n");
+	//ft_printf("Waiting...\n");
 	while (bit_counter < 24)
 	{
 		/*
@@ -92,13 +91,13 @@ static void	receive_len(t_message *message)
 		pause();
 		bit_counter++;
 	}
-	ft_printf("var: %i\n", var);//REMOVE
-	ft_putbinary(var);//REMOVE
+	//ft_printf("var: %i\n", var);//REMOVE
+	//ft_putbinary(var);//REMOVE
 	message->len = var;
 	message->str = ft_calloc(var + 1, sizeof(char));
 	if (message->str == NULL)
 		print_error_and_exit(1);
-	ft_printf("Len: %i\n", message->len);//REMOVE
+	//ft_printf("Len: %i\n", message->len);//REMOVE
 }
 
 static void	message_cicle(t_message *message)

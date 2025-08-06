@@ -6,7 +6,7 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:27:54 by akolupae          #+#    #+#             */
-/*   Updated: 2025/08/05 19:28:03 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/08/06 12:12:06 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	main(int argc, char **argv)
 		print_error_and_exit(6);
 	else if (len > 2097152)
 		print_error_and_exit(7);
-	ft_printf("Len: %i\n", len);//REMOVE
+	//ft_printf("Len: %i\n", len);//REMOVE
 	send_bits(pid, len, 24);
 	i = 0;
 	while (i < len)
@@ -53,6 +53,7 @@ static void	setup_handler(void)
 	struct sigaction	sa;
 
 	sa.sa_handler = handler;
+	sa.sa_flags = SA_NODEFER;
 	if (sigemptyset(&sa.sa_mask) == -1 ||
 		sigaction(SIGUSR1, &sa, NULL) == -1)
 		print_error_and_exit(0);
@@ -71,22 +72,22 @@ static void	send_bits(pid_t pid, int var, int bits)
 	int	result;
 	int	time;
 
-	ft_printf("Sending var=%i in %i bits\n", var, bits);
+	//ft_printf("Sending var=%i in %i bits\n", var, bits);//REMOVE
 	bit = bits;
 	while (bit > 0)
 	{
 		//ft_printf("signal was: %i\n", signal_received);//REMOVE
 		signal_received = 0;
 		//ft_printf("signal now: %i\n", signal_received);//REMOVE
-		ft_printf("var: %i\n", var);
+		//ft_printf("var: %i\n", var);//REMOVE
 		if ((int) var % 2 == 0)
 		{
-			ft_printf("sending 0\n");//REMOVE
+			//ft_printf("sending 0\n");//REMOVE
 			result = kill(pid, SIGUSR1);
 		}
 		else
 		{
-			ft_printf("sending 1\n");//REMOVE
+			//ft_printf("sending 1\n");//REMOVE
 			result = kill(pid, SIGUSR2);
 		}
 		if (result == -1)

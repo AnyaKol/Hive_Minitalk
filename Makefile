@@ -6,7 +6,7 @@
 #    By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/19 15:02:26 by akolupae          #+#    #+#              #
-#    Updated: 2025/07/21 13:21:16 by akolupae         ###   ########.fr        #
+#    Updated: 2025/08/06 14:58:46 by akolupae         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,18 +38,16 @@ RESET = \033[0m
 
 all: $(NAME_C) $(NAME_S)
 
-$(NAME_C): $(OBJ_DIR) $(OBJ_C) $(OBJ_COMMON) $(LIB_NAME)
+$(NAME_C): $(OBJ_C) $(OBJ_COMMON) $(LIB_NAME)
 	@echo "$(COLOR) Building $@$(RESET)"
-	@$(CC) $(CFLAGS) -o $(NAME_C) $(OBJ_C) $(OBJ_COMMON) $(LIB_NAME)
+	@$(CC) $(CFLAGS) -o $@ $(OBJ_C) $(OBJ_COMMON) $(LIB_NAME)
 
-$(NAME_S): $(OBJ_DIR) $(OBJ_S) $(OBJ_COMMON) $(LIB_NAME)
+$(NAME_S): $(OBJ_S) $(OBJ_COMMON) $(LIB_NAME)
 	@echo "$(COLOR) Building $@$(RESET)"
-	@$(CC) $(CFLAGS) -o $(NAME_S) $(OBJ_S) $(OBJ_COMMON) $(LIB_NAME)
-
-$(OBJ_DIR):
-	@mkdir $(OBJ_DIR)
+	@$(CC) $(CFLAGS) -o $@ $(OBJ_S) $(OBJ_COMMON) $(LIB_NAME)
 
 $(OBJ_DIR)/%.o: %.c $(HDR)
+	@mkdir -p $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
 $(LIB_NAME): $(LIB_HDR)
