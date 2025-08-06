@@ -6,17 +6,17 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 16:27:54 by akolupae          #+#    #+#             */
-/*   Updated: 2025/08/06 12:12:06 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/08/06 17:41:01 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
+static void	setup_handler(void);
 static void	handler(int sig);
 static void	send_bits(pid_t pid, int var, int bits);
-static void	setup_handler(void);
 
-volatile sig_atomic_t	signal_received = 0;
+volatile sig_atomic_t	g_signal_received = 0;
 
 int	main(int argc, char **argv)
 {
@@ -37,7 +37,6 @@ int	main(int argc, char **argv)
 		print_error_and_exit(6);
 	else if (len > 2097152)
 		print_error_and_exit(7);
-	//ft_printf("Len: %i\n", len);//REMOVE
 	send_bits(pid, len, 24);
 	i = 0;
 	while (i < len)
@@ -54,16 +53,15 @@ static void	setup_handler(void)
 
 	sa.sa_handler = handler;
 	sa.sa_flags = SA_NODEFER;
-	if (sigemptyset(&sa.sa_mask) == -1 ||
-		sigaction(SIGUSR1, &sa, NULL) == -1)
+	if (sigemptyset(&sa.sa_mask) == -1
+		|| sigaction(SIGUSR1, &sa, NULL) == -1)
 		print_error_and_exit(0);
 }
 
 static void	handler(int sig)
 {
 	(void) sig;
-
-	signal_received = 1;
+	g_signal_received = 1;
 }
 
 static void	send_bits(pid_t pid, int var, int bits)
@@ -72,30 +70,20 @@ static void	send_bits(pid_t pid, int var, int bits)
 	int	result;
 	int	time;
 
-	//ft_printf("Sending var=%i in %i bits\n", var, bits);//REMOVE
 	bit = bits;
 	while (bit > 0)
 	{
-		//ft_printf("signal was: %i\n", signal_received);//REMOVE
-		signal_received = 0;
-		//ft_printf("signal now: %i\n", signal_received);//REMOVE
-		//ft_printf("var: %i\n", var);//REMOVE
+		g_signal_received = 0;
 		if ((int) var % 2 == 0)
-		{
-			//ft_printf("sending 0\n");//REMOVE
 			result = kill(pid, SIGUSR1);
-		}
 		else
-		{
-			//ft_printf("sending 1\n");//REMOVE
 			result = kill(pid, SIGUSR2);
-		}
 		if (result == -1)
 			print_error_and_exit(4);
 		var >>= 1;
 		bit--;
 		time = 0;
-		while (signal_received != 1)
+		while (g_signal_received != 1)
 		{
 			time += SLEEP_TIME;
 			usleep(SLEEP_TIME);
