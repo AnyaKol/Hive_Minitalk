@@ -6,7 +6,7 @@
 #    By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/19 15:02:26 by akolupae          #+#    #+#              #
-#    Updated: 2025/08/06 14:58:46 by akolupae         ###   ########.fr        #
+#    Updated: 2025/08/07 17:10:17 by akolupae         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME_C = client
 NAME_S = server
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra
 
 HDR = minitalk.h
 

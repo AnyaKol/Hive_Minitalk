@@ -6,13 +6,11 @@
 /*   By: akolupae <akolupae@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:28:30 by akolupae          #+#    #+#             */
-/*   Updated: 2025/04/30 15:16:54 by akolupae         ###   ########.fr       */
+/*   Updated: 2025/08/07 17:08:26 by akolupae         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static bool	check_space(char c);
 
 int	ft_atoi(const char *nptr)
 {
@@ -23,28 +21,22 @@ int	ft_atoi(const char *nptr)
 	i = 0;
 	sign = 1;
 	result = 0;
-	while (check_space(nptr[i]))
-		i++;
-	if (nptr[i] == '+' || nptr[i] == '-')
+	if (nptr[i] == '-')
 	{
-		if (nptr[i] == '-')
-			sign = -sign;
+		sign = -sign;
 		i++;
 	}
-	while (nptr[i] >= '0' && nptr[i] <= '9')
+	if (!ft_isdigit(nptr[i]))
+			return (0);
+	while (ft_isdigit(nptr[i]))
 	{
 		result = result * 10 + (nptr[i] - '0');
 		if ((result > INT_MAX && sign == 1) || (-result) < INT_MIN)
 			return (0);
 		i++;
 	}
+	if (nptr[i] != '\0')
+		return (0);
 	result = result * sign;
 	return (result);
-}
-
-static bool	check_space(char c)
-{
-	if (c == ' ' || (c >= '\t' && c <= '\r'))
-		return (true);
-	return (false);
 }
