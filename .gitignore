@@ -1,6 +1,5 @@
 client
 server
-*.swp
 
 # Prerequisites
 *.d
@@ -10,6 +9,8 @@ server
 *.ko
 *.obj
 *.elf
+*.swp
+*.swo
 
 # Linker output
 *.ilk
@@ -57,3 +58,5 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+.gitignore
